@@ -49,6 +49,12 @@ def get_response(user_input):
 
 # Streamlit 인터페이스
 st.title("사용자 로그 학습 기반 추천 알고리즘 포트폴리오 챗봇")
+
+
+# 이미지 표시
+st.image("algo.png", caption="Welcome to the Restaurant Chatbot", use_column_width=True)
+
+
 st.write("포트폴리오에 관한 질문을 입력해보세요. 예: 주제가 무엇인가요?")
 
 user_input = st.text_input("user", "")
