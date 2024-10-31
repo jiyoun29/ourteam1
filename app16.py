@@ -10,27 +10,34 @@ st.set_page_config(layout="wide")
 # 제목 설정
 st.title("비디오 사물 검출 앱")
 
-# 파일 업로드 버튼을 상단으로 이동
+# 모델 파일 업로드
+model_file = st.file_uploader("모델 파일을 업로드하세요", type=["pt"])
+if model_file:
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".pt") as temp_model_file:
+        temp_model_file.write(model_file.read())
+        model_path = temp_model_file.name
+    model = YOLO(model_path)
+    st.success("모델이 성공적으로 로드되었습니다.")
+
+# 비디오 파일 업로드
 uploaded_file = st.file_uploader("비디오 파일을 업로드하세요", type=["mp4", "mov", "avi"])
 
 # 전체 레이아웃을 컨테이너로 감싸기
-with st.container(): # 이 with절이란? 하나의 기능을 하는 코드를 묶어주는 것(가독성 높이기)
-    col1, col2 = st.columns(2)  # 열을 균등하게 분배하여 넓게 표시
+with st.container():
+    col1, col2 = st.columns(2)
 
     with col1:
-        st.header("원본 영상") # 영상 제목
-        if uploaded_file is not None:  # 못봤음,,
-            st.video(uploaded_file) # 영상을 플레이 해라.
+        st.header("원본 영상")
+        if uploaded_file is not None:
+            st.video(uploaded_file)
         else:
             st.write("원본 영상을 표시하려면 비디오 파일을 업로드하세요.")
 
     with col2:
-        st.header("사물 검출 결과 영상") # 영상 제목
-        # 사물 검출 결과가 나타날 자리 확보 및 고정 높이 회색 박스 스타일 추가
+        st.header("사물 검출 결과 영상")
         result_placeholder = st.empty()
-#       if "processed_video" in st.session_state: # 사물검출 완료된 비디오가 있으면
         if "processed_video" in st.session_state and st.session_state["processed_video"] is not None:
-            st.video(st.session_state["processed_video"]) # 그 비디오를 출력해라.
+            result_placeholder.video(st.session_state["processed_video"])
         else:
             result_placeholder.markdown(
                 """
@@ -41,15 +48,14 @@ with st.container(): # 이 with절이란? 하나의 기능을 하는 코드를 �
                 unsafe_allow_html=True,
             )
 
-
 # 버튼 스타일 설정
 st.markdown(
     """
     <style>
     .stButton > button {
-        background-color: #4d4d4d;  /* 진한 회색 */
-        color: #ffffff;             /* 흰색 텍스트 */
-        font-weight: bold;          /* 굵은 글씨 */
+        background-color: #4d4d4d;
+        color: #ffffff;
+        font-weight: bold;
         padding: 12px 24px;
         font-size: 16px;
         border: none;
@@ -58,13 +64,12 @@ st.markdown(
         transition: background-color 0.3s;
     }
     .stButton > button:hover {
-        background-color: #333333;  /* 호버 시 더 진한 회색 */
+        background-color: #333333;
     }
     </style>
     """,
     unsafe_allow_html=True
 )
-
 
 # 사물 검출 버튼 클릭 이벤트 처리
 if st.button("사물 검출 실행") and uploaded_file and model_file:
@@ -102,10 +107,12 @@ if st.button("사물 검출 실행") and uploaded_file and model_file:
 
                 cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
                 cv2.putText(frame, label, (x1, y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+            st.write(f"Frame {frame_count}: {len(detections)} detections")
         else:
-            # 검출 결과가 없을 때 로그 출력
-            st.write(f"Frame {frame_count}: No detections")
+            # 검출 결과가 없을 때도 원본 프레임을 저장
+            st.write(f"Frame {frame_count}: No detections - Original frame saved")
 
+        # 원본 또는 검출된 프레임을 그대로 저장
         out.write(frame)
         frame_count += 1
 
