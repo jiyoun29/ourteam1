@@ -111,3 +111,4 @@ if st.button("사물 검출 실행"):
         st.session_state["processed_video"] = output_path
         result_placeholder.video(output_path)
         st.success("사물 검출이 완료되어 오른쪽에 표시됩니다.")
+        
