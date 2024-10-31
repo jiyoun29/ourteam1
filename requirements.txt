@@ -6,4 +6,3 @@ ultralytics
 ffmpeg-python
 ffmpeg
 moviepy
-cv2
