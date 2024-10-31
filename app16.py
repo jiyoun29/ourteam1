@@ -14,23 +14,23 @@ with st.container(): # 이 with절이란? 하나의 기능을 하는 코드를 �
     uploaded_file = st.file_uploader("비디오 파일을 업로드하세요", type=["mp4", "mov", "avi"])
 
     with col1:
-        st.header("원본 영상")
-        if uploaded_file is not None:
-            st.video(uploaded_file)
+        st.header("원본 영상") # 영상 제목
+        if uploaded_file is not None:  # 못봤음,,
+            st.video(uploaded_file) # 영상을 플레이 해라.
         else:
             st.write("원본 영상을 표시하려면 비디오 파일을 업로드하세요.")
 
     with col2:
-        st.header("사물 검출 결과 영상")
-        if "processed_video" in st.session_state:
-            st.video(st.session_state["processed_video"])
+        st.header("사물 검출 결과 영상") # 영상 제목
+        if "processed_video" in st.session_state: # 사물검출 완료된 비디오가 있으면
+            st.video(st.session_state["processed_video"]) # 그 비디오를 출력해라.
         else:
             st.write("여기에 사물 검출 결과가 표시됩니다.")
 
 # 사물 검출 버튼 추가
-if st.button("사물 검출 실행"):
-    if uploaded_file is not None:
-        st.session_state["processed_video"] = uploaded_file
-        st.success("사물 검출이 완료되어 오른쪽에 표시됩니다.")
+if st.button("사물 검출 실행"): # 사물검출 실행이라는 버튼을 누르면
+    if uploaded_file is not None: # upload된 파일이 none이 아니라면, 영상이라면
+        st.session_state["processed_video"] = uploaded_file # 검출된 영상을 사용
+        st.success("사물 검출이 완료되어 오른쪽에 표시됩니다.") # 이메세지 출력
     else:
         st.warning("사물 검출을 실행하려면 비디오 파일을 업로드하세요.")
