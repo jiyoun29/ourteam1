@@ -37,6 +37,31 @@ with st.container(): # 이 with절이란? 하나의 기능을 하는 코드를 �
                 unsafe_allow_html=True,
             )
 
+
+# 버튼 스타일 설정
+st.markdown(
+    """
+    <style>
+    .stButton > button {
+        background-color: #4d4d4d;  /* 진한 회색 */
+        color: #ffffff;             /* 흰색 텍스트 */
+        font-weight: bold;          /* 굵은 글씨 */
+        padding: 12px 24px;
+        font-size: 16px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+    .stButton > button:hover {
+        background-color: #333333;  /* 호버 시 더 진한 회색 */
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+
 # 사물 검출 버튼 추가
 if st.button("사물 검출 실행"): # 사물검출 실행이라는 버튼을 누르면
     if uploaded_file is not None: # upload된 파일이 none이 아니라면, 영상이라면
